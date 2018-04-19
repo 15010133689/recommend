@@ -1,0 +1,187 @@
+group = 'com.recommend'
+allprojects {
+	version = rootProject.version
+
+	repositories {
+		mavenCentral()
+	}
+}
+def svcModules() {
+	subprojects.findAll {
+		it.name.contains('svc-')
+	}
+}
+def webModules() {
+	subprojects.findAll {
+		it.name.contains('web-')
+	}
+}
+def parentModules() {
+	subprojects.findAll {
+		it.name.contains('p-')
+	}
+}
+def allModules() {
+	subprojects.findAll {
+		it.name.contains('svc-') || it.name.contains('web-') || it.name.contains('p-')
+	}
+}
+buildscript {
+	ext {
+		springBootVersion = '2.0.1.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+ext.axon_version = '3.2'
+ext.jgroup_version = '3.6.10.Final'
+ext.mysql_connector_version = '5.7.20'
+ext.druid_version = '1.0.28'
+ext.hibernate_version = '5.0.12.Final'
+ext.springBootVersion = '2.0.1.RELEASE'
+
+
+configure(allModules()) {
+	buildscript {
+		repositories {
+			mavenCentral()
+		}
+		dependencies {
+			classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		}
+	}
+	apply plugin: 'java'
+	apply plugin: 'idea'
+	apply plugin: 'org.springframework.boot'
+	apply plugin: 'io.spring.dependency-management'
+
+	group = 'com.recommend'
+	sourceCompatibility = 1.8
+
+	repositories {
+		maven { url "https://repo.spring.io/milestone" }
+        mavenCentral()
+	}
+
+	dependencies {
+		compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-server')
+		compile('org.springframework.cloud:spring-cloud-starter-netflix-zuul')
+        compile ("org.axonframework:axon-amqp:$axon_version")
+        compile ("org.springframework.boot:spring-boot-starter-amqp")
+      //  compile ("org.springframework.boot:spring-boot-devtools:${springBootVersion}")
+		compile ('org.springframework.cloud:spring-cloud-starter-config')
+	}
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:Finchley.M9"
+        }
+    }
+}
+
+configure(svcModules()) {
+    buildscript {
+        repositories {
+            mavenCentral()
+        }
+        dependencies {
+            classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        }
+    }
+	apply plugin: 'java'
+	apply plugin: 'idea'
+	apply plugin: 'org.springframework.boot'
+	apply plugin: 'io.spring.dependency-management'
+
+    group = 'com.recommend'
+	sourceCompatibility = 1.8
+	targetCompatibility = 1.8
+
+	repositories {
+		mavenCentral()
+	}
+
+//	ext.externalLibs = new File(rootProject.rootDir, 'libs').getAbsolutePath()
+//	ext.externalLibsJarTree = fileTree(dir: externalLibs, include: '**/*.jar')
+	dependencies {
+//		compile externalLibsJarTree
+		compile('org.springframework.boot:spring-boot-starter-data-jpa')
+        compile('org.springframework.boot:spring-boot-starter-web')
+		compile('mysql:mysql-connector-java')
+		//axon
+		compile ("org.axonframework:axon-core:$axon_version")
+		compile ("org.axonframework:axon-mongo:$axon_version")
+		compile ("org.axonframework:axon-distributed-commandbus-springcloud:$axon_version")
+//		compile "org.axonframework:axon-distributed-commandbus-jgroups:$axon_version"
+		compile ("org.axonframework:axon-spring:$axon_version")
+		compile ("org.axonframework:axon-spring-boot-autoconfigure:$axon_version")
+//		compile "org.jgroups:jgroups:$jgroup_version"
+
+		//lombok
+		compile ("org.projectlombok:lombok:1.16.10")
+		//log4j
+//		compile('org.apache.logging.log4j:log4j-api:2.6.2')
+		compile('org.apache.logging.log4j:log4j-core:2.6.2')
+		//mongodb
+		compile ("org.springframework.boot:spring-boot-starter-data-mongodb")
+
+		compile ("com.alibaba:druid:$druid_version")
+	}
+
+}
+configure(webModules()) {
+	buildscript {
+		repositories {
+			mavenCentral()
+		}
+		dependencies {
+			classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		}
+	}
+	apply plugin: 'java'
+	apply plugin: 'idea'
+	apply plugin: 'org.springframework.boot'
+	apply plugin: 'io.spring.dependency-management'
+
+	group = 'com.recommend'
+	sourceCompatibility = 1.8
+
+	repositories {
+		mavenCentral()
+	}
+
+	dependencies {
+		//	compile ('org.springframework.boot:spring-boot-starter-freemarker')
+	}
+}
+configure(parentModules()) {
+	buildscript {
+		repositories {
+			mavenCentral()
+		}
+		dependencies {
+			classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		}
+	}
+	apply plugin: 'java'
+	apply plugin: 'idea'
+	apply plugin: 'org.springframework.boot'
+	apply plugin: 'io.spring.dependency-management'
+
+	group = 'com.recommend'
+	sourceCompatibility = 1.8
+
+	repositories {
+		maven { url "https://repo.spring.io/milestone" }
+		mavenCentral()
+	}
+
+	dependencies {
+		compile('org.springframework.cloud:spring-cloud-config-server')
+		//	compile ('org.springframework.boot:spring-boot-starter-freemarker')
+	}
+}

@@ -1,0 +1,7 @@
+include 'parent:p-config'
+include 'parent:p-eureka'
+include 'parent:p-proxy'
+include 'parent:p-base'
+include 'services:svc-display'
+include 'webs:web-pages'
+
