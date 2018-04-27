@@ -1,5 +1,4 @@
 .gradle
-/build/
 !gradle/wrapper/gradle-wrapper.jar
 
 ### STS ###
@@ -11,6 +10,15 @@
 .springBeans
 .sts4-cache
 
+build
+dist
+logs
+out
+
+**/.settings
+**/.classpath
+**/bin
+
 ### IntelliJ IDEA ###
 .idea
 *.iws
@@ -21,6 +29,5 @@
 /nbproject/private/
 /build/
 /nbbuild/
-/dist/
 /nbdist/
 /.nb-gradle/
